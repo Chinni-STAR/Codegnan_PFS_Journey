@@ -1,0 +1,8 @@
+print("----------------")
+print("My name is M.chinni")
+print("I am studying b.tech in Vignan's Institute of engineering for women")
+print("My age is 21")
+print("I passed out in the year 2026")
+print("I am currently takes a course in codegnan")
+print("My Course is Full Stack python Development")
+print("-------------------")
