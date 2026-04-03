@@ -16,15 +16,14 @@ if hours_ >=13 and Min_ < 60:
 else:
     print(f" you have entered nrml or min are incorrect")'''
 
-#List ---> collection of different items inside the [] , which are sepersted by (,)
+#List ---> collection of different items inside the [] , which are seperated by (,)
 #4eg: [1,"Name",[1,2,"Chinni"]]
-'''
+
 List_1 = [1,2,3,"python",[1,2,["python","java"],"Language"]]
 print(List_1[4][2][0][3])
 
 List_2 = [1,2,3,4,5,"Chinni",[1,2,3,["Honey","Bujji"],"Name"]]
-print(List_2[6][3][1][0])'''
-
+print(List_2[6][3][1][0])
 
 #Methods of list
 #---------------
