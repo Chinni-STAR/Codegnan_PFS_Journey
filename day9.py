@@ -1,8 +1,9 @@
-any = input("enter your lines")
+'''
+text = input("enter your lines")
 vowels = 0
 conso = 0
 space = 0
-for j in any:
+for j in text:
     if j in "AEIOUaeiou":
         vowels += 1
     elif j == " ":
@@ -12,8 +13,10 @@ for j in any:
 print(vowels)
 print(conso)
 print(space)
-
-any = input("enter youre lines")
+'''
+'''
+#without consantants how to count the vowels and consantants
+any = input("enter your lines:")
 vowels = 0
 space = 0
 for j in any:
@@ -24,24 +27,26 @@ for j in any:
 print(f"this is count of all vowels in string {vowels}")
 print(f"this is count of all spaces in string {space}")
 print(f"this is count of all conso in the string {len(any)-(vowels+space)}")
-
+'''
+'''
 a = 10#normal variable
 print(a)
-for i in range(1,10):#"i" is a nitial variable also we will not get error in initial variable
+for i in range(1,10):
     print(i)
-
+for i in range(1,10):#"i" is a initial variable also we will not get error in initial variable
+    print(i)
 for i in range(1,11,2):
     print(i)
-'''
+'''    
 # range()---> this is used to generate the numbers
-#SYNTX---->range(start,end,step)
+#SYNTAX---->range(start,end,step)
 '''
 for i in range(1,11,4):
     print(i)
 
 for i in range(0,5):
     print(i)
-
+''' 
 any = "123456"
 print(int(any))
 print(list(any))

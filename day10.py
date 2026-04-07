@@ -1,16 +1,15 @@
-'''
+
 prime_num = int(input("enter the number"))
 count = 0
 for j in range(1, prime_num+1):
-                print(j)
-                if prime_num % == 0:
-                count += 1
-                print(count)
-if count ==2:
+    if prime_num % j == 0:
+        count += 1
+        print(count)
+if count == 2:
     print(f"{prime_num} is a prime number")
 else :
      print(f"{prime_num} is not a prime number")
-
+'''
 for an in range(2,10):
     count = 0
     for j in range(1,an+1):
@@ -44,7 +43,7 @@ for j in any:
     if j not in empty_:
         empty_.append(j)
     print(any)    
-'''
+
 so = 153
 length_ = len(str(so))
 amstr_ = 0
@@ -55,6 +54,7 @@ if amstr_ == so:
     print(f"{so} is amstrong num")
 else:
     print(f"{so} is not amstrong num")
+'''
 
 '''
 take a list only with int in which even numbers should be separate,

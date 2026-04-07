@@ -59,10 +59,18 @@ for j in range(num):
         print("*",end="")
     print()
 '''
-
+'''
 num=int(input("enter the limit:"))
 for j in range(num):
     print(" "*(num-j),end="")
     for i in range(j+1):
+        print("*",end=" ")
+    print()
+'''
+
+num=int(input("enter the limit:"))
+for j in range(num):
+    for i in range(num):
         print("*",end="")
     print()
+
