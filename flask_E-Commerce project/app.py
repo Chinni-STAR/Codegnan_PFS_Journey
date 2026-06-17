@@ -220,6 +220,23 @@ def item_listing():
 
     return render_template('item_listing.html',products=products,keyword=keyword)
 
+#User Dashboard
+@app.route('/user_dashboard')
+def user_dashboard():
+    cursor.execute("SELECT * FROM products")
+    products=cursor.fetchall()
+    return render_template('user_dashboard.html',products=products)
+
+@app.route('/user_view_item/<int:product_id>')
+def user_view_item(product_id):
+    cursor.execute("SELECT * FROM products WHERE id = %s", (product_id,))
+    product=cursor.fetchone()
+    if not product:
+        flash("Product not found")
+        return redirect('/user_dashboard')
+    return render_template('user_view_item.html',product=product)
+
+
 #VIEW ITEM
 @app.route('/view_item/<int:product_id>')
 def view_item(product_id):
@@ -325,5 +342,19 @@ def admin_profile():
         flash("Admin Profile Updated Successfully")
         return redirect('/admin_profile')
     return render_template('admin_profile.html',admin=admin)
+
+#user search
+@app.route('/user_search',methods=['GET','POST'])
+def user_search():
+    if request.method=='POST':
+        keyword=request.form['keyword']
+        cursor.execute("""
+        SELECT * FROM products WHERE product_name LIKE %s OR description LIKE %s
+        """,('%'+keyword+'%','%'+keyword+'%'))
+        products=cursor.fetchall()
+    else:
+        cursor.execute("SELECT * FROM products")
+        products=cursor.fetchall()
+    return render_template('search_result.html',products=products)
 if __name__ == '__main__':
     app.run(debug=True)

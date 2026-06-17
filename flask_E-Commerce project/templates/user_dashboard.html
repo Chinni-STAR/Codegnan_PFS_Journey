@@ -1,0 +1,35 @@
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+<form method="POST" action="/user_search">
+    <input type="text"
+           name="keyword"
+           placeholder="Search Products">
+
+    <button type="submit">
+        Search
+    </button>
+</form>
+
+<hr>
+
+{% for product in products %}
+
+<div>
+
+    <img src="{{ url_for('static',
+    filename='images/' + product[4]) }}"
+    width="150">
+
+    <h3>{{ product[1] }}</h3>
+
+    <p>₹ {{ product[3] }}</p>
+
+    <a href="/user_view_item/{{ product[0] }}">
+        View Details
+    </a>
+
+</div>
+
+<hr>
+
+{% endfor %}
