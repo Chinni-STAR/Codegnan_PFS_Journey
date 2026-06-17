@@ -52,7 +52,7 @@ am =my_generator()
 print(next(am))
 
 
-import
+
 
 
 

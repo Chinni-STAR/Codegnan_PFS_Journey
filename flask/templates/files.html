@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>All Files</title>
+</head>
+<body>
+
+<h2>Uploaded Files</h2>
+
+{% with messages=get_flashed_messages() %}
+{% for msg in messages %}
+<p>{{msg}}</p>
+{% endfor %}
+{% endwith %}
+
+<table border="1" cellpadding="10">
+
+<tr>
+    <th>ID</th>
+    <th>File Name</th>
+    <th>Video URL</th>
+    <th>Upload Time</th>
+    <th>Actions</th>
+</tr>
+
+{% for file in files %}
+
+<tr>
+
+<td>{{file[0]}}</td>
+
+<td>{{file[1]}}</td>
+
+<td>
+<a href="{{file[2]}}" target="_blank">
+Video
+</a>
+</td>
+
+<td>{{file[3]}}</td>
+
+<td>
+
+<a href="/view/{{file[1]}}">
+View
+</a>
+
+|
+
+<a href="/download/{{file[1]}}">
+Download
+</a>
+
+|
+
+<a href="/metadata/{{file[0]}}">
+Metadata
+</a>
+
+|
+
+<a href="/delete/{{file[0]}}">
+Delete
+</a>
+
+</td>
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+<br>
+
+<a href="/upload">
+Upload New File
+</a>
+
+</body>
+</html>

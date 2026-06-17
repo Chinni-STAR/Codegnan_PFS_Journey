@@ -1,0 +1,38 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>View Note</title>
+</head>
+<body>
+
+    <h2>View Note</h2>
+
+    <p>
+        <strong>Note ID:</strong>
+        {{ note.note_id }}
+    </p>
+
+    <p>
+        <strong>Title:</strong>
+        {{ note.title }}
+    </p>
+
+    <p>
+        <strong>Content:</strong>
+        {{ note.content }}
+    </p>
+
+    <p>
+        <strong>Created At:</strong>
+        {{ note.created_at }}
+    </p>
+
+    <br>
+
+    <a href="/view_notes">
+        Back to Notes
+    </a>
+
+</body>
+</html>

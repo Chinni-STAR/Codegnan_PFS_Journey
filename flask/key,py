@@ -1,0 +1,49 @@
+""" from itsdangerous import URLSafeTimedSerializer
+serializer = URLSafeTimedSerializer("secret_key = os.urandom(32).hex()")
+token = serializer.dumps(
+ "user@gmail.com",
+ salt="otp-verification"
+)
+email = serializer.loads(
+ token,
+ salt="otp-verification",max_age=300
+)
+print(email)
+import os
+import random
+secret_key=os.urandom(32).hex()
+print(secret_key) """
+""" import os
+import random
+from itsdangerous import URLSafeTimedSerializer
+secret_key = os.urandom(32).hex()
+print(secret_key)
+serializer = URLSafeTimedSerializer("{secret_key}")
+token = serializer.dumps(
+ "user@gmail.com",
+ salt="otp-verification"
+)
+email = serializer.loads(
+ token,
+ salt="otp-verification",max_age=300
+)
+print(email) """
+import random
+import smtplib
+from email.message import EmailMessage
+username=input('Enter user name: ')
+otp=random.randint(1000,9999)
+str_otp=str(otp)
+print('OTP Sucessfully sent to the mail')
+sender = "sjagguma@gitam.in"
+password = "ekwz bvas tqpq meua"
+msg = EmailMessage()
+msg['Subject'] = "Registration"
+msg['From'] = sender
+msg['To'] = "jaggumantrisurya@gmail.com"
+msg.set_content(str_otp)
+server = smtplib.SMTP('smtp.gmail.com', 587)
+server.starttls()
+server.login(sender, password)
+server.send_message(msg)
+server.quit()

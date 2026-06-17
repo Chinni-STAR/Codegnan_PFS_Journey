@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Note</title>
+</head>
+<body>
+
+    <h2>Add New Note</h2>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for msg in messages %}
+                <p>{{ msg }}</p>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <form method="POST">
+
+        <label>Title:</label>
+        <br>
+        <input type="text" name="title" required>
+        <br><br>
+
+        <label>Content:</label>
+        <br>
+        <textarea name="content" rows="6" cols="40" required></textarea>
+        <br><br>
+
+        <button type="submit">Add Note</button>
+
+    </form>
+
+    <br>
+
+    <a href="/view_notes">View All Notes</a>
+
+</body>
+</html>

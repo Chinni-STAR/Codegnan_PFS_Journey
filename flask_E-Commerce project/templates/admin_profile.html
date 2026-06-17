@@ -1,0 +1,32 @@
+
+<form method="POST" enctype="multipart/form-data">
+
+    <input type="text"
+           name="name"
+           value="{{ admin[1] }}"
+           required>
+
+    <br><br>
+
+    <input type="email"
+           name="email"
+           value="{{ admin[2] }}"
+           required>
+
+    <br><br>
+
+    {% if admin[4] %}
+
+    <img src="{{ url_for('static',filename='images/' + admin[4]) }}" width="120"><br><br>
+
+    {% endif %}
+
+    <input type="file" name="image">
+
+    <br><br>
+
+    <button type="submit">
+        Update Profile
+    </button>
+
+</form>

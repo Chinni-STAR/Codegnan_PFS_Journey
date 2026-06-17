@@ -42,7 +42,7 @@ u=int(input("enter the number"))
 def prime(v): # should store valued another variable name also
     print(v)
 prime(u) #should assign same variable name only
-
+'''
 
 num=7
 count=0
@@ -55,7 +55,7 @@ def prime(Num,k):
     else:
         print("Not prime")
 prime(num,count)
-'''
+
 text="chinni"
 res=""
 def palindrone(tex,i):
@@ -67,4 +67,10 @@ def palindrone(tex,i):
         print("not palindrone")
 palindrone(text,res)
 
-
+a=int(input("enter the number:"))
+def evenorodd(a):
+    if a % 2==0:
+        print("even")
+    else:
+        print("odd")
+evenorodd(a)

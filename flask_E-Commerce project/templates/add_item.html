@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Product</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <div class="auth-container">
+        <h2>Add Product</h2>
+
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <p class="flash-msg">{{ message }}</p>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <form method="POST" enctype="multipart/form-data">
+            <input type="text" name="product_name" placeholder="Product Name" required>
+            <textarea name="description" placeholder="Description" rows="4" required></textarea>
+            <input type="number" name="price" step="0.01" placeholder="Price" required>
+            
+            <label style="font-size: 0.9rem; color: #666;">Product Image:</label>
+            <input type="file" name="image" accept="image/*" required>
+
+            <button type="submit">Add Product</button>
+        </form>
+
+        <br>
+        <div style="text-align: center;">
+            <a href="{{ url_for('admin_dashboard') }}">Back to Dashboard</a>
+        </div>
+    </div>
+
+</body>
+</html>
