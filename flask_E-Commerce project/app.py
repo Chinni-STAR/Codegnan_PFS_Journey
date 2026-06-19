@@ -220,6 +220,63 @@ def item_listing():
 
     return render_template('item_listing.html',products=products,keyword=keyword)
 
+#USER SIGNUP
+@app.route('/user_signup',methods=['GET','POST'])
+def user_signup():
+    if request.method == 'POST':
+        name=request.form['name']
+        email=request.form['email']
+        password=request.form['password']
+        
+        cursor.execute(
+            "select * from users where email=%s",(email,)
+        )
+        if cursor.fetchone():
+            flash("Email Already Registered")
+            return redirect('/user_signup')
+        hashed_password=bcrypt.hashpw(password.encode('utf-8'),bcrypt.gensalt())
+        cursor.execute("""
+        INSERT INTO users(name,email,password) VALUES(%s,%s,%s)""",(name,email,hashed_password.decode('utf-8')
+        ))
+        conn.commit()
+        flash("signup successful")
+        return redirect('/user_login')
+    return render_template('user_signup.html') 
+        
+#USER LOGIN
+@app.route('/user_login',methods=['GET','POST'])
+def user_login():
+    if request.method == 'POST':
+        email=request.form['email']
+        password=request.form['password']
+
+        cursor.execute(
+            "select * from users where email=%s",(email,)
+        )
+        user=cursor.fetchone()
+        if user:
+            stored_password = user[3]
+            if bcrypt.checkpw(password.encode('utf-8'),stored_password.encode('utf-8')):
+                session['user_id'] = user[0]
+                session['user_name'] = user[1]
+                session['user_email'] = user[2]
+                flash("Login Successfully")
+                return redirect('/user_dashboard')
+            else:
+                flash("Invalid Email")
+        else:
+            flash("Mail Not Registered")
+    return render_template('user_login.html')        
+
+#USER LOGOUT
+@app.route('/user_logout')
+def user_logout():
+    session.pop('user_id',None)
+    session.pop('user_name',None)
+    session.pop('user_email',None)
+    flash("Logged out successfully")
+    return redirect('/user_login')
+        
 #User Dashboard
 @app.route('/user_dashboard')
 def user_dashboard():
@@ -235,6 +292,63 @@ def user_view_item(product_id):
         flash("Product not found")
         return redirect('/user_dashboard')
     return render_template('user_view_item.html',product=product)
+
+#user search
+@app.route('/user_search',methods=['GET','POST'])
+def user_search():
+    if request.method=='POST':
+        keyword=request.form['keyword']
+        cursor.execute("""
+        SELECT * FROM products WHERE product_name LIKE %s OR description LIKE %s
+        """,('%'+keyword+'%','%'+keyword+'%'))
+        products=cursor.fetchall()
+    else:
+        cursor.execute("SELECT * FROM products")
+        products=cursor.fetchall()
+    return render_template('search_result.html',products=products)
+
+#ADD TO CART
+@app.route('/add_to_cart/<int:product_id>')
+def add_to_cart(product_id):
+    cursor.execute("SELECT * FROM products WHERE id=%s",(product_id,))
+    product=cursor.fetchone()
+    if product:
+        cart=session.get('cart',[])
+        cart.append({
+            'id':product[0],
+            'name':product[1],
+            'price':float(product[3]),
+            'image':product[4]
+        })
+        session['cart']=cart
+        flash("product Added to Cart Successfully")
+    return redirect('/user_dashboard')
+
+#VIEW CART
+@app.route('/view_cart')
+def view_cart():
+    if 'user_id' not in session:
+        flash("Please login first")
+        return redirect('/user_login')
+    cart = session.get('cart',[])
+
+    total = sum(float(item['price']) for item in cart)
+    return render_template(
+        'view_cart.html',cart=cart,total=total
+    )
+
+#REMOVE CART
+@app.route('/remove_cart/<int:product_id>')
+def remove_cart(product_id):
+    cart = session.get('cart',[])
+    cart=[
+        item for item in cart
+        if item['id'] != product_id
+    ]
+
+    session['cart'] = cart
+    flash("Item removed from cart")
+    return redirect('/view_cart')
 
 
 #VIEW ITEM
@@ -343,18 +457,5 @@ def admin_profile():
         return redirect('/admin_profile')
     return render_template('admin_profile.html',admin=admin)
 
-#user search
-@app.route('/user_search',methods=['GET','POST'])
-def user_search():
-    if request.method=='POST':
-        keyword=request.form['keyword']
-        cursor.execute("""
-        SELECT * FROM products WHERE product_name LIKE %s OR description LIKE %s
-        """,('%'+keyword+'%','%'+keyword+'%'))
-        products=cursor.fetchall()
-    else:
-        cursor.execute("SELECT * FROM products")
-        products=cursor.fetchall()
-    return render_template('search_result.html',products=products)
 if __name__ == '__main__':
     app.run(debug=True)
