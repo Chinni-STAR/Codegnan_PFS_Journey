@@ -2,12 +2,19 @@ from flask import Flask, render_template, request,redirect, url_for,session,flas
 import mysql.connector,random,smtplib,bcrypt,os
 from email.message import EmailMessage
 from werkzeug.utils import secure_filename
+import razorpay
+import hmac
+import hashlib
+from flask import jsonify
 
 app=Flask(__name__)
 app.secret_key='your_secret_key'
-
+RAZORPAY_KEY_ID = "rzp_test_T4Zl7RJovJSDkK"
+RAZORPAY_KEY_SECRET = "QsaR0CByFqAPa4avpscwoA9u"
+client = razorpay.Client(
+    auth=(RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET)
+)
 app.config['UPLOAD_FOLDER'] = 'static/images'
-
 #DATABASE CONNECTION
 
 conn=mysql.connector.connect(
@@ -364,6 +371,83 @@ def view_item(product_id):
         flash("Product not found")
         return redirect("/item_listing")
     return render_template('view_item.html',product=product)
+
+#CHECKOUT
+@app.route('/checkout')
+def checkout():
+    if 'user_id' not in session:
+        return redirect('/user_login')
+    cart = session.get('cart', [])
+    total = sum(item['price'] for item in cart)
+    order = client.order.create({
+        "amount": int(total * 100),
+        "currency": "INR",
+        "payment_capture": 1
+        })
+    session['razorpay_order_id'] = order['id']
+    return render_template(
+        'checkout.html',
+        amount=total,
+        order_id=order['id'],
+        key_id=RAZORPAY_KEY_ID
+    )
+
+#VERIFY PAYMENT
+@app.route('/verify_payment', methods=['POST'])
+def verify_payment():
+    data = request.get_json()
+    razorpay_order_id = data['razorpay_order_id']
+    razorpay_payment_id = data['razorpay_payment_id']
+    razorpay_signature = data['razorpay_signature']
+    generated_signature = hmac.new(
+        bytes(RAZORPAY_KEY_SECRET, 'utf-8'),
+        bytes(
+            razorpay_order_id +
+            "|" +
+            razorpay_payment_id,
+            'utf-8'
+            ),
+            hashlib.sha256
+        ).hexdigest()
+    if generated_signature == razorpay_signature:
+        total = sum(
+            item['price']
+            for item in session.get('cart', [])
+        )
+        cursor.execute(
+            """
+            INSERT INTO payments(
+            user_id,
+            order_id,
+            payment_id,
+            amount,
+            status
+            )
+            VALUES
+            (%s,%s,%s,%s,%s)
+            """,
+            (
+                session['user_id'],
+                razorpay_order_id,
+                razorpay_payment_id,
+                total,
+                "Success"
+            )
+        )
+        conn.commit()
+        session['cart'] = []
+        return jsonify({
+            "status":"success"
+            })
+    return jsonify({
+        "status":"failed"
+        })
+
+#--------------------------payment successfully--------------->
+@app.route('/payment_success')
+def payment_success():
+    return render_template('payment_success.html')
+
 
 #UPDATE ITEM
 @app.route('/update_item/<int:product_id>',methods=['GET','POST'])

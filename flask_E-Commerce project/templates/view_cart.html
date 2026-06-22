@@ -58,17 +58,30 @@
 
     </table>
 
+    <!-- Payment Button -->
+    <div class="mb-3">
+
+        <a href="/checkout" class="btn btn-success">
+            Proceed To Payment
+        </a>
+
+        <a href="/user_dashboard" class="btn btn-secondary">
+            Continue Shopping
+        </a>
+
+    </div>
+
     {% else %}
 
     <div class="alert alert-warning">
         Cart Is Empty
     </div>
 
-    {% endif %}
-
     <a href="/user_dashboard" class="btn btn-secondary">
         Continue Shopping
     </a>
+
+    {% endif %}
 
 </div>
 
