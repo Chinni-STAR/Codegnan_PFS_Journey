@@ -402,52 +402,74 @@ def verify_payment():
     generated_signature = hmac.new(
         bytes(RAZORPAY_KEY_SECRET, 'utf-8'),
         bytes(
-            razorpay_order_id +
-            "|" +
-            razorpay_payment_id,
+            razorpay_order_id + "|" + razorpay_payment_id,
             'utf-8'
             ),
             hashlib.sha256
         ).hexdigest()
     if generated_signature == razorpay_signature:
+        cart=session.get('cart',[])
         total = sum(
             item['price']
-            for item in session.get('cart', [])
+            for item in cart
+
         )
         cursor.execute(
             """
-            INSERT INTO payments(
+            INSERT INTO orders(
             user_id,
-            order_id,
-            payment_id,
-            amount,
-            status
+            razorpay_order_id,
+            razorpay_payment_id,
+            total_amount
+            
             )
             VALUES
-            (%s,%s,%s,%s,%s)
+            (%s,%s,%s,%s)
             """,
             (
                 session['user_id'],
                 razorpay_order_id,
                 razorpay_payment_id,
-                total,
-                "Success"
+                total
             )
         )
         conn.commit()
+        
+        order_id =cursor.lastrowid
+        
+        #save order items
+        for item in cart:
+            cursor.execute(""" INSERT INTO order_items(order_id,product_id,product_name,price) VALUES(%s,%s,%s,%s)
+            """,(order_id,item['id'],item['name'],item['price'])               
+            )
+        conn.commit()
+        
+        #clear cart
         session['cart'] = []
         return jsonify({
             "status":"success"
             })
     return jsonify({
         "status":"failed"
-        })
-
+    })
 #--------------------------payment successfully--------------->
 @app.route('/payment_success')
 def payment_success():
+    if 'user_id' not in session:
+        return redirect('/user_login')
     return render_template('payment_success.html')
 
+#MY ORDERS
+@app.route('/my_orders')
+def my_orders():
+    if 'user_id' not in session:
+        return redirect('/user_login')
+    cursor.execute("""
+    SELECT * FROM orders WHERE user_id =%s ORDER BY id DESC
+    """,(session['user_id'],)
+    )
+    orders=cursor.fetchall()
+    return render_template('my_orders.html',orders=orders)
 
 #UPDATE ITEM
 @app.route('/update_item/<int:product_id>',methods=['GET','POST'])
