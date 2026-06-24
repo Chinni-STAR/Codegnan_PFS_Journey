@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice #{{ order[0] }}</title>
+    <style>
+        body { font-family: sans-serif; background-color: #f4f7f6; padding: 40px 20px; }
+        .invoice-card { background: #ffffff; max-width: 600px; margin: 0 auto; padding: 40px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+        h2 { color: #333; margin-top: 0; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        .info-group { margin-bottom: 10px; color: #555; }
+        table { width: 100%; border-collapse: collapse; margin: 25px 0; }
+        th { background-color: #f8f9fa; text-align: left; padding: 12px; border-bottom: 2px solid #ddd; }
+        td { padding: 12px; border-bottom: 1px solid #eee; }
+        .total-row { font-size: 1.2rem; font-weight: bold; color: #000; }
+        .total-amount { text-align: right; margin-top: 20px; font-size: 1.5rem; color: #28a745; }
+    </style>
+</head>
+<body>
+
+    <div class="invoice-card">
+        <h2>Invoice</h2>
+        
+        <div class="info-group"><b>Order ID:</b> {{ order[0] }}</div>
+        <div class="info-group"><b>Payment ID:</b> {{ order[3] }}</div>
+        <div class="info-group"><b>Date:</b> {{ order[5] }}</div>
+
+        <table>
+            <tr>
+                <th>Product</th>
+                <th>Price</th>
+            </tr>
+            {% for item in items %}
+            <tr>
+                <td>{{ item[3] }}</td>
+                <td>₹{{ item[4] }}</td>
+            </tr>
+            {% endfor %}
+            <tr class="total-row">
+                <td>Total</td>
+                <td>₹{{ order[4] }}</td>
+            </tr>
+        </table>
+
+        <div class="total-amount">
+            Total Amount: ₹{{ order[4] }}
+        </div>
+    </div>
+
+</body>
+</html>

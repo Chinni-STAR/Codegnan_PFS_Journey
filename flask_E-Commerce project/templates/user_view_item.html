@@ -1,20 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ product[1] }}</title>
+    <style>
+        body { font-family: sans-serif; background-color: #f4f7f6; padding: 40px 20px; }
+        .product-container { background: #ffffff; max-width: 600px; margin: 0 auto; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+        
+        .product-img { width: 100%; height: auto; border-radius: 8px; margin-bottom: 20px; }
+        h2 { color: #333; margin-top: 0; }
+        
+        .price-tag { font-size: 1.5rem; font-weight: bold; color: #28a745; margin: 15px 0; display: block; }
+        .description { color: #555; line-height: 1.6; margin-bottom: 20px; }
+        
+        .back-link { display: inline-block; padding: 10px 20px; background-color: #6c757d; color: white; text-decoration: none; border-radius: 6px; }
+        .back-link:hover { background-color: #5a6268; }
+    </style>
+</head>
+<body>
 
-<h2>{{ product[1] }}</h2>
+    <div class="product-container">
+        <img src="{{ url_for('static', filename='images/' + product[4]) }}" alt="{{ product[1] }}" class="product-img">
+        
+        <h2>{{ product[1] }}</h2>
+        <span class="price-tag">₹ {{ product[3] }}</span>
+        
+        <p class="description">
+            <strong>Description:</strong><br>
+            {{ product[2] }}
+        </p>
 
-<img src="{{ url_for('static',
-filename='images/' + product[4]) }}"
-width="300">
+        <a href="/user_dashboard" class="back-link">← Back to Dashboard</a>
+    </div>
 
-<p>
-    <strong>Description:</strong>
-    {{ product[2] }}
-</p>
-
-<p>
-    <strong>Price:</strong>
-    ₹ {{ product[3] }}
-</p>
-
-<a href="/user_dashboard">
-    Back
-</a>
+</body>
+</html>

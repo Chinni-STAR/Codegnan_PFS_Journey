@@ -1,50 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Catalog</title>
+    <style>
+        body { font-family: sans-serif; background-color: #f4f7f6; padding: 40px 20px; }
+        .container { max-width: 1000px; margin: 0 auto; }
+        
+        /* Header & Search Bar */
+        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        form { display: flex; gap: 10px; }
+        input[type="text"] { padding: 10px; border: 1px solid #ddd; border-radius: 6px; width: 250px; }
+        .btn { padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; text-decoration: none; font-weight: bold; }
+        .btn-search { background: #6c757d; color: white; }
+        .btn-cart { background: #28a745; color: white; }
 
-<form method="POST" action="/user_search">
-    <input type="text"
-           name="keyword"
-           placeholder="Search Products">
+        /* Product Grid */
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 25px; }
+        .product-card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center; }
+        .product-card img { width: 100%; height: 180px; object-fit: cover; border-radius: 8px; margin-bottom: 15px; }
+        .product-card h3 { margin: 10px 0; font-size: 1.1rem; }
+        .price { color: #28a745; font-weight: bold; margin-bottom: 15px; display: block; }
+        
+        .btn-view { color: #007bff; text-decoration: none; font-size: 0.9rem; }
+        .btn-add { display: block; width: 100%; padding: 10px; background: #007bff; color: white; border: none; border-radius: 6px; margin-top: 10px; cursor: pointer; }
+    </style>
+</head>
+<body>
 
-    <button type="submit">
-        Search
-    </button>
-</form>
+<div class="container">
+    <div class="top-bar">
+        <h2>Our Products</h2>
+        <form method="POST" action="/user_search">
+            <input type="text" name="keyword" placeholder="Search Products">
+            <button type="submit" class="btn btn-search">Search</button>
+        </form>
+        <a href="/view_cart" class="btn btn-cart">View Cart</a>
+    </div>
 
-<br>
-
-<a href="/view_cart">
-    <button>
-        View Cart
-    </button>
-</a>
-
-<hr>
-
-{% for product in products %}
-
-<div>
-
-    <img src="{{ url_for('static',
-    filename='images/' + product[4]) }}"
-    width="150">
-
-    <h3>{{ product[1] }}</h3>
-
-    <p>₹ {{ product[3] }}</p>
-
-    <a href="/user_view_item/{{ product[0] }}">
-        View Details
-    </a>
-
-    &nbsp;&nbsp;
-
-    <a href="/add_to_cart/{{ product[0] }}">
-        <button type="button">
-            Add To Cart
-        </button>
-    </a>
-
+    <div class="product-grid">
+        {% for product in products %}
+        <div class="product-card">
+            <img src="{{ url_for('static', filename='images/' + product[4]) }}" alt="{{ product[1] }}">
+            <h3>{{ product[1] }}</h3>
+            <span class="price">₹ {{ product[3] }}</span>
+            
+            <a href="/user_view_item/{{ product[0] }}" class="btn-view">View Details</a>
+            
+            <form action="/add_to_cart/{{ product[0] }}" method="POST">
+                <button type="submit" class="btn-add">Add To Cart</button>
+            </form>
+        </div>
+        {% endfor %}
+    </div>
 </div>
 
-<hr>
-
-{% endfor %}
+</body>
+</html>

@@ -1,89 +1,62 @@
-
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Checkout</title>
+    <style>
+        body { font-family: sans-serif; background-color: #f4f7f6; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        .checkout-card { background: #ffffff; width: 100%; max-width: 400px; padding: 2rem; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center; }
+        h2 { color: #333; margin-bottom: 1.5rem; }
+        .amount-display { font-size: 1.5rem; font-weight: bold; color: #28a745; margin-bottom: 2rem; }
+        #rzp-button { width: 100%; padding: 14px; background-color: #007bff; color: white; border: none; border-radius: 6px; font-size: 1.1rem; cursor: pointer; transition: background 0.3s; }
+        #rzp-button:hover { background-color: #0056b3; }
+    </style>
 </head>
 <body>
 
-<h2>Total Amount : ₹{{ amount }}</h2>
+    <div class="checkout-card">
+        <h2>Complete Payment</h2>
+        <div class="amount-display">₹{{ amount }}</div>
 
-<button id="rzp-button">
-    Pay Now
-</button>
+        <button id="rzp-button">Pay Now</button>
+    </div>
 
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-
-<script>
-
-var options = {
-
-    "key": "{{ key_id }}",
-
-    "amount": "{{ amount * 100 }}",
-
-    "currency": "INR",
-
-    "name": "E-Commerce Store",
-
-    "description": "Cart Payment",
-
-    "order_id": "{{ order_id }}",
-
-    "handler": function(response){
-
-        fetch("/verify_payment",{
-
-            method:"POST",
-
-            headers:{
-                "Content-Type":"application/json"
-            },
-
-            body:JSON.stringify({
-
-                razorpay_payment_id:
-                response.razorpay_payment_id,
-
-                razorpay_order_id:
-                response.razorpay_order_id,
-
-                razorpay_signature:
-                response.razorpay_signature
-
-            })
-        })
-
-        .then(res=>res.json())
-
-        .then(data=>{
-
-            if(data.status=="success")
-            {
-                window.location="/payment_success";
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script>
+        var options = {
+            "key": "{{ key_id }}",
+            "amount": "{{ amount * 100 }}",
+            "currency": "INR",
+            "name": "E-Commerce Store",
+            "description": "Cart Payment",
+            "order_id": "{{ order_id }}",
+            "handler": function(response) {
+                fetch("/verify_payment", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        razorpay_payment_id: response.razorpay_payment_id,
+                        razorpay_order_id: response.razorpay_order_id,
+                        razorpay_signature: response.razorpay_signature
+                    })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status === "success") {
+                        window.location = "/payment_success";
+                    } else {
+                        alert("Payment Failed: " + data.message);
+                    }
+                });
             }
-            else
-            {
-                alert("Payment Failed");
-            }
+        };
 
-        });
-
-    }
-
-};
-
-var rzp = new Razorpay(options);
-
-document.getElementById('rzp-button').onclick = function(e){
-
-    rzp.open();
-
-    e.preventDefault();
-
-}
-
-</script>
-
+        var rzp = new Razorpay(options);
+        document.getElementById('rzp-button').onclick = function(e) {
+            rzp.open();
+            e.preventDefault();
+        }
+    </script>
 </body>
 </html>

@@ -1,35 +1,50 @@
-<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Profile</title>
+    <style>
+        body { font-family: sans-serif; background-color: #f4f7f6; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        .container { background: #ffffff; width: 100%; max-width: 450px; padding: 2rem; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h2 { text-align: center; color: #333; }
+        .form-group { margin-bottom: 1.5rem; }
+        label { display: block; margin-bottom: 0.5rem; font-weight: bold; }
+        input[type="text"], input[type="email"], input[type="file"] { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
+        .profile-img { display: block; margin: 0 auto 1rem; border-radius: 50%; width: 120px; height: 120px; object-fit: cover; border: 2px solid #eee; }
+        button { width: 100%; padding: 12px; background-color: #28a745; color: white; border: none; border-radius: 5px; font-size: 1rem; cursor: pointer; }
+        button:hover { background-color: #218838; }
+    </style>
+</head>
+<body>
 
-<div class='auth-container'>
-<form method="POST" enctype="multipart/form-data">
+    <div class="container">
+        <h2>Update Profile</h2>
+        
+        <form method="POST" enctype="multipart/form-data">
+            
+            {% if admin[4] %}
+                <img src="{{ url_for('static', filename='images/' + admin[4]) }}" alt="Profile Image" class="profile-img">
+            {% endif %}
 
-    <input type="text"
-           name="name"
-           value="{{ admin[1] }}"
-           required>
+            <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" name="name" value="{{ admin[1] }}" required>
+            </div>
 
-    <br><br>
+            <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" name="email" value="{{ admin[2] }}" required>
+            </div>
 
-    <input type="email"
-           name="email"
-           value="{{ admin[2] }}"
-           required>
+            <div class="form-group">
+                <label>Update Profile Picture</label>
+                <input type="file" name="image" accept="image/*">
+            </div>
 
-    <br><br>
+            <button type="submit">Update Profile</button>
+        </form>
+    </div>
 
-    {% if admin[4] %}
-
-    <img src="{{ url_for('static',filename='images/' + admin[4]) }}" width="120"><br><br>
-
-    {% endif %}
-
-    <input type="file" name="image">
-
-    <br><br>
-
-    <button type="submit">
-        Update Profile
-    </button>
-
-</form>
-</div>
+</body>
+</html>

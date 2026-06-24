@@ -6,6 +6,10 @@ import razorpay
 import hmac
 import hashlib
 from flask import jsonify
+from io import BytesIO
+from flask import send_file
+from xhtml2pdf import pisa 
+
 
 app=Flask(__name__)
 app.secret_key='your_secret_key'
@@ -315,7 +319,7 @@ def user_search():
     return render_template('search_result.html',products=products)
 
 #ADD TO CART
-@app.route('/add_to_cart/<int:product_id>')
+@app.route('/add_to_cart/<int:product_id>', methods=['GET', 'POST'])
 def add_to_cart(product_id):
     cursor.execute("SELECT * FROM products WHERE id=%s",(product_id,))
     product=cursor.fetchone()
@@ -436,7 +440,7 @@ def verify_payment():
         conn.commit()
         
         order_id =cursor.lastrowid
-        
+        session['/last_order_id']=order_id
         #save order items
         for item in cart:
             cursor.execute(""" INSERT INTO order_items(order_id,product_id,product_name,price) VALUES(%s,%s,%s,%s)
@@ -471,6 +475,52 @@ def my_orders():
     orders=cursor.fetchall()
     return render_template('my_orders.html',orders=orders)
 
+#INVOICE
+@app.route('/invoice/<int:order_id>')
+def invoice(order_id):
+    if 'user_id' not in session:
+        return redirect('/user_login')
+    cursor.execute("""
+    SELECT * FROM orders WHERE id=%s
+    """,(order_id,)
+    )
+    order=cursor.fetchone()
+    cursor.execute("""
+    SELECT * FROM order_items WHERE order_id=%s
+    """,(order_id,)
+    )
+    items=cursor.fetchall()
+    return render_template('invoice.html',order=order,items=items)
+
+#DOWNLOAD PDF
+@app.route('/download_invoice/<int:order_id>')
+def download_invoice(order_id):
+    if 'user_id' not in session:
+        return redirect('/user_login')
+    cursor.execute("""
+    SELECT * FROM orders WHERE id=%s
+    """,(order_id,)
+    )
+    order=cursor.fetchone()
+    cursor.execute("""
+    SELECT * FROM order_items WHERE order_id=%s
+    """,(order_id,)
+    )
+    items=cursor.fetchall()
+    html=render_template("invoice.html",order=order,items=items)
+    pdf=BytesIO()
+    pisa_status=pisa.CreatePDF(html,dest=pdf)
+    if pisa_status.err:
+        return "error generating Pdf"
+    pdf.seek(0)
+    return send_file(
+        pdf,mimetype='application/pdf',
+        as_attachment=True,
+        download_name=f'invoice_{order_id}.pdf'
+    )
+    
+    
+    
 #UPDATE ITEM
 @app.route('/update_item/<int:product_id>',methods=['GET','POST'])
 def update_item(product_id):

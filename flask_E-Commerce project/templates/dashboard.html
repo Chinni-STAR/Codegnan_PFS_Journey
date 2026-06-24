@@ -1,34 +1,59 @@
-
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
+    <style>
+        body { font-family: sans-serif; background-color: #f4f7f6; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        .auth-container { background: #ffffff; width: 100%; max-width: 500px; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+        h1 { color: #333; margin-top: 0; }
+        p { color: #666; margin-bottom: 2rem; }
+        
+        .dashboard-nav { list-style: none; padding: 0; }
+        .dashboard-nav li { margin-bottom: 15px; }
+        .dashboard-nav a { 
+            display: block; 
+            padding: 15px; 
+            background: #f8f9fa; 
+            border: 1px solid #ddd; 
+            text-decoration: none; 
+            color: #333; 
+            border-radius: 8px; 
+            font-weight: 600; 
+            transition: all 0.3s;
+        }
+        .dashboard-nav a:hover { background: #007bff; color: white; border-color: #007bff; }
+        
+        .logout-btn { display: inline-block; margin-top: 20px; color: #dc3545; text-decoration: none; font-size: 0.9rem; }
+        .logout-btn:hover { text-decoration: underline; }
+        .flash-msg { color: #d9534f; background: #fdf7f7; padding: 10px; border-radius: 5px; margin-bottom: 1rem; }
+    </style>
 </head>
 <body>
-<div class='auth-container'
-<h1>Welcome {{ admin_name }}</h1>
 
-<p>Email: {{ admin_email }}</p>
+    <div class="auth-container">
+        <h1>Welcome, {{ admin_name }}</h1>
+        <p><strong>Email:</strong> {{ admin_email }}</p>
 
-{% with messages = get_flashed_messages() %}
-    {% if messages %}
-        {% for message in messages %}
-            <p>{{ message }}</p>
-        {% endfor %}
-    {% endif %}
-{% endwith %}
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <p class="flash-msg">{{ message }}</p>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
 
-<h3>Admin Dashboard</h3>
+        <h3>Admin Dashboard</h3>
 
-<ul>
-    <li><a href="#">Manage Products</a></li>
-    <li><a href="#">View Orders</a></li>
-    <li><a href="#">Manage Customers</a></li>
-</ul>
+        <ul class="dashboard-nav">
+            <li><a href="#">Manage Products</a></li>
+            <li><a href="#">View Orders</a></li>
+            <li><a href="#">Manage Customers</a></li>
+        </ul>
 
-<br>
+        <a href="{{ url_for('admin_logout') }}" class="logout-btn">Logout</a>
+    </div>
 
-<a href="{{ url_for('admin_logout') }}">Logout</a>
-</div>
 </body>
 </html>

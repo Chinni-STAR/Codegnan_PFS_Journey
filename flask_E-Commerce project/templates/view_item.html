@@ -1,35 +1,60 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>View Product</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Details</title>
+    <style>
+        body { font-family: sans-serif; background-color: #f4f7f6; padding: 40px 20px; }
+        .container { background: #ffffff; max-width: 600px; margin: 0 auto; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+        h2 { color: #333; margin-top: 0; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        
+        .detail-group { margin-bottom: 15px; }
+        .detail-label { font-weight: bold; color: #555; display: block; }
+        .detail-value { color: #333; }
+        
+        .product-img { width: 100%; border-radius: 8px; margin: 15px 0; border: 1px solid #eee; }
+        
+        .back-link { display: inline-block; margin-top: 20px; color: #007bff; text-decoration: none; font-weight: 600; }
+        .back-link:hover { text-decoration: underline; }
+    </style>
 </head>
 <body>
 
-    <h2>Product Details</h2>
+    <div class="container">
+        <h2>Product Details</h2>
 
-    <p><strong>ID:</strong> {{ product[0] }}</p>
+        <div class="detail-group">
+            <span class="detail-label">ID:</span>
+            <span class="detail-value">{{ product[0] }}</span>
+        </div>
 
-    <p><strong>Product Name:</strong> {{ product[1] }}</p>
+        <div class="detail-group">
+            <span class="detail-label">Product Name:</span>
+            <span class="detail-value">{{ product[1] }}</span>
+        </div>
 
-    <p><strong>Description:</strong> {{ product[2] }}</p>
+        <div class="detail-group">
+            <span class="detail-label">Description:</span>
+            <span class="detail-value">{{ product[2] }}</span>
+        </div>
 
-    <p><strong>Price:</strong> ₹{{ product[3] }}</p>
+        <div class="detail-group">
+            <span class="detail-label">Price:</span>
+            <span class="detail-value" style="color: #28a745; font-weight: bold;">₹{{ product[3] }}</span>
+        </div>
 
-    <p><strong>Image:</strong></p>
+        <div class="detail-group">
+            <span class="detail-label">Image:</span>
+            {% if product[4] %}
+                <img src="{{ url_for('static', filename='images/' + product[4]) }}" alt="{{ product[1] }}" class="product-img">
+            {% else %}
+                <p style="color: #999;">No Image Available</p>
+            {% endif %}
+        </div>
 
-    {% if product[4] %}
-        <img src="{{ url_for('static', filename='images/' + product[4]) }}"
-             width="250">
-    {% else %}
-        <p>No Image Available</p>
-    {% endif %}
-
-    <br><br>
-
-    <a href="{{ url_for('item_listing') }}">
-        Back to Product List
-    </a>
+        <a href="{{ url_for('item_listing') }}" class="back-link">← Back to Product List</a>
+    </div>
 
 </body>
 </html>
