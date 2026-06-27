@@ -57,6 +57,10 @@ def send_otp(email,otp):
         server.login(sender_email,sender_pass)
         server.send_message(msg)
     print('OTP sent successfully')
+    
+@app.route('/')
+def index():
+    return redirect(url_for('user_login'))
 
 # ADMIN SIGNUP
 @app.route('/admin_signup',methods=['GET','POST'])
@@ -288,12 +292,16 @@ def user_logout():
     flash("Logged out successfully")
     return redirect('/user_login')
         
-#User Dashboard
 @app.route('/user_dashboard')
 def user_dashboard():
+    # If the user is NOT in the session, send them to login
+    if 'user_id' not in session:
+        flash("Please login or signup to view products.")
+        return redirect(url_for('user_login'))
+    
     cursor.execute("SELECT * FROM products")
-    products=cursor.fetchall()
-    return render_template('user_dashboard.html',products=products)
+    products = cursor.fetchall()
+    return render_template('user_dashboard.html', products=products)
 
 @app.route('/user_view_item/<int:product_id>')
 def user_view_item(product_id):
@@ -347,6 +355,22 @@ def view_cart():
     return render_template(
         'view_cart.html',cart=cart,total=total
     )
+
+#WISHLIST
+@app.route('/add_to_wishlist/<int:product_id>')
+def add_to_wishlist(product_id):
+    if 'user_id' not in session:
+        flash("Please login to add to favorites")
+        return redirect(url_for('user_login'))
+    
+    # Check if already in wishlist
+    cursor.execute("SELECT * FROM wishlist WHERE user_id=%s AND product_id=%s", (session['user_id'], product_id))
+    if not cursor.fetchone():
+        cursor.execute("INSERT INTO wishlist (user_id, product_id) VALUES (%s, %s)", (session['user_id'], product_id))
+        conn.commit()
+    
+    # Redirect to the Favorites/Wishlist page
+    return redirect(url_for('wishlist_page'))
 
 #REMOVE CART
 @app.route('/remove_cart/<int:product_id>')

@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Product Catalog</title>
     <style>
+        
         body { font-family: sans-serif; background-color: #f4f7f6; padding: 40px 20px; }
         .container { max-width: 1000px; margin: 0 auto; }
         
@@ -22,37 +23,51 @@
         .product-card img { width: 100%; height: 180px; object-fit: cover; border-radius: 8px; margin-bottom: 15px; }
         .product-card h3 { margin: 10px 0; font-size: 1.1rem; }
         .price { color: #28a745; font-weight: bold; margin-bottom: 15px; display: block; }
-        
+        .wishlist-link {
+        text-decoration: none;
+        font-size: 28px;
+        color: #ff0000; /* Red outline color */
+        display: block;
+        margin: 10px 0;
+        transition: all 0.3s ease;
+        }
+
+        .wishlist-link:hover {
+         color: #ff0000;
+        }
+        .wishlist-link:hover::after {
+        content: '\2764'; /* Unicode for solid heart */
+        }        
         .btn-view { color: #007bff; text-decoration: none; font-size: 0.9rem; }
         .btn-add { display: block; width: 100%; padding: 10px; background: #007bff; color: white; border: none; border-radius: 6px; margin-top: 10px; cursor: pointer; }
     </style>
 </head>
 <body>
+{% extends 'base.html' %}
 
-<div class="container">
-    <div class="top-bar">
-        <h2>Our Products</h2>
-        <form method="POST" action="/user_search">
-            <input type="text" name="keyword" placeholder="Search Products">
-            <button type="submit" class="btn btn-search">Search</button>
-        </form>
-        <a href="/view_cart" class="btn btn-cart">View Cart</a>
-    </div>
-
-    <div class="product-grid">
-        {% for product in products %}
-        <div class="product-card">
-            <img src="{{ url_for('static', filename='images/' + product[4]) }}" alt="{{ product[1] }}">
-            <h3>{{ product[1] }}</h3>
-            <span class="price">₹ {{ product[3] }}</span>
-            
-            <a href="/user_view_item/{{ product[0] }}" class="btn-view">View Details</a>
-            
-            <form action="/add_to_cart/{{ product[0] }}" method="POST">
-                <button type="submit" class="btn-add">Add To Cart</button>
-            </form>
+{% block content %}
+    <h2>Our Products</h2>
+    {% if products %}
+        <div class="product-grid">
+            {% for product in products %}
+                <div class="product-card">
+                    <img src="{{ url_for('static', filename='images/' + product[4]) }}">
+                    <h3>{{ product[1] }}</h3>
+                    <p class="price">₹{{ product[3] }}</p>
+                    <a href="/user_view_item/{{ product[0] }}" class="btn">View Details</a>
+                    <a href="/add_to_wishlist/{{ product[0] }}" class="wishlist-link">&#9825;</a>
+                    <form action="{{ url_for('add_to_cart', product_id=product[0]) }}" method="POST">
+                    <button type="submit" class="btn-add">Add To Cart</button>
+                    </form>
+                </div>
+                
+            {% endfor %}
         </div>
-        {% endfor %}
+    {% else %}
+        <p>No products available yet.</p>
+    {% endif %}
+{% endblock %}
+
     </div>
 </div>
 

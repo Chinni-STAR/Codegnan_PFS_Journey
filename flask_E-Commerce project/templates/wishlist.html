@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Your Favorites</h2>
+<div class="product-grid">
+    {% for product in wishlist_items %}
+    <div class="product-card">
+        <img src="{{ url_for('static', filename='images/' + product[4]) }}">
+        <h3>{{ product[1] }}</h3>
+        <p>₹ {{ product[3] }}</p>
+        <a href="/remove_from_wishlist/{{ product[0] }}" class="btn-remove">Remove</a>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
